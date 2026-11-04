@@ -9,20 +9,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android
+      - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          accept-android-sdk-licenses: true
 
-      - name: Install SDK
+      - name: Install Android SDK
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
       - name: Set up Gradle
@@ -31,7 +34,7 @@ jobs:
           gradle-version: "8.7"
 
       - name: Extract project
-        run: unzip Daftar60.zip -d extracted
+        run: unzip -o Daftar60.zip -d extracted
 
       - name: Build APK
         run: gradle -p extracted/Daftar60Android_Final assembleDebug
@@ -41,3 +44,4 @@ jobs:
         with:
           name: Daftar60-APK
           path: extracted/Daftar60Android_Final/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
